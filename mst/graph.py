@@ -5,14 +5,6 @@ from typing import Union
 class Graph:
 
     def __init__(self, adjacency_mat: Union[np.ndarray, str]):
-        """
-    
-        Unlike the BFS assignment, this Graph class takes an adjacency matrix as input. `adjacency_mat` 
-        can either be a 2D numpy array of floats or a path to a CSV file containing a 2D numpy array of floats.
-
-        In this project, we will assume `adjacency_mat` corresponds to the adjacency matrix of an undirected graph.
-    
-        """
         if type(adjacency_mat) == str:
             self.adj_mat = self._load_adjacency_matrix_from_csv(adjacency_mat)
         elif type(adjacency_mat) == np.ndarray:
@@ -26,19 +18,39 @@ class Graph:
             return np.loadtxt(f, delimiter=',')
 
     def construct_mst(self):
-        """
-    
-        TODO: Given `self.adj_mat`, the adjacency matrix of a connected undirected graph, implement Prim's 
-        algorithm to construct an adjacency matrix encoding the minimum spanning tree of `self.adj_mat`. 
-            
-        `self.adj_mat` is a 2D numpy array of floats. Note that because we assume our input graph is
-        undirected, `self.adj_mat` is symmetric. Row i and column j represents the edge weight between
-        vertex i and vertex j. An edge weight of zero indicates that no edge exists. 
-        
-        This function does not return anything. Instead, store the adjacency matrix representation
-        of the minimum spanning tree of `self.adj_mat` in `self.mst`. We highly encourage the
-        use of priority queues in your implementation. Refer to the heapq module, particularly the 
-        `heapify`, `heappop`, and `heappush` functions.
+        start_v = self.adj_mat[0]   #initialize list of edges of first node
+        num_vertices = len(start_v)
+        mst = [[0] * num_vertices for i in range(num_vertices)] #initialize empty mst matrix to fill
+        visited = [0]   #initialize list of nodes visited
+        heap = list(start_v)   #initialize the heap
+        heapq.heapify(heap)
+        while len(visited) < num_vertices:  #runs the loop until all of the nodes are in visited
+            curr_edge = heapq.heappop(heap)
+            if curr_edge != 0:  #check that an edge exists
+                for node in visited:    #Iterate through the edges of nodes visited to find the where the curr_edge is
+                    edges = list(self.adj_mat[node])
+                    if curr_edge in edges:
+                        curr_node = node
+                        add_node = edges.index(curr_edge)
+                        if add_node not in visited: #If the node is new, add it to visited and add it's edges to the heap
+                            visited.append(add_node)
+                            heap += list(self.adj_mat[add_node])
+                            heapq.heapify(heap)
+                            mst[curr_node][add_node] = curr_edge
+                            mst[add_node][curr_node] = curr_edge
+                            break
+        self.mst_mat = np.array(mst)
 
-        """
-        self.mst = None
+    def get_weights(self):
+        depth = 1
+        weight = 0
+        for edges in self.mst_mat:
+            for i in range(depth):
+                weight += edges[i]
+            depth += 1
+        return weight
+
+
+
+
+
