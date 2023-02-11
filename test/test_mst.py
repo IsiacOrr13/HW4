@@ -46,7 +46,7 @@ def test_mst_small():
     Unit test for the construction of a minimum spanning tree on a small graph.
 
     """
-    file_path = '../data/small.csv'
+    file_path = './data/small.csv'
     g = Graph(file_path)
     g.construct_mst()
 
@@ -62,7 +62,7 @@ def test_mst_single_cell_data():
     https://bioconductor.org/packages/release/bioc/html/slingshot.html
 
     """
-    file_path = '../data/slingshot_example.txt'
+    file_path = './data/slingshot_example.txt'
     coords = np.loadtxt(file_path)  # load coordinates of single cells in low-dimensional subspace
     dist_mat = pairwise_distances(coords)  # compute pairwise distances to form graph
     g = Graph(dist_mat)
@@ -71,11 +71,11 @@ def test_mst_single_cell_data():
 
 
 def test_mst_symmetry():
-    file_path = '../data/small.csv'
+    file_path = './data/small.csv'
     g = Graph(file_path)
     g.construct_mst()
 
-    file_path = '../data/slingshot_example.txt'
+    file_path = './data/slingshot_example.txt'
     coords = np.loadtxt(file_path)  # load coordinates of single cells in low-dimensional subspace
     dist_mat = pairwise_distances(coords)  # compute pairwise distances to form graph
     x = Graph(dist_mat)
