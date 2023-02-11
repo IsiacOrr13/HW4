@@ -1,4 +1,5 @@
 import pytest
+import sklearn
 import numpy as np
 from mst import Graph
 from sklearn.metrics import pairwise_distances
@@ -36,6 +37,8 @@ def check_mst(adj_mat: np.ndarray,
         for j in range(i + 1):
             total += mst[i, j]
     assert approx_equal(total, expected_weight), 'Proposed MST has incorrect expected weight'
+    assert len(adj_mat) == len(mst), 'MST has same number of nodes as adj_mat'
+    assert len(mst) == len(mst[0]), 'MST is a square matrix'
 
 
 def test_mst_small():
@@ -68,10 +71,15 @@ def test_mst_single_cell_data():
     check_mst(g.adj_mat, g.mst_mat, 57.263561605571695)
 
 
-def test_mst_student():
-    """
+def test_mst_symmetry():
+    file_path = '../data/small.csv'
+    g = Graph(file_path)
+    g.construct_mst()
 
-    TODO: Write at least one unit test for MST construction.
-
-    """
-    pass
+    file_path = '../data/slingshot_example.txt'
+    coords = np.loadtxt(file_path)  # load coordinates of single cells in low-dimensional subspace
+    dist_mat = pairwise_distances(coords)  # compute pairwise distances to form graph
+    x = Graph(dist_mat)
+    x.construct_mst()
+    assert x.mst_mat[0][1] == x.mst_mat[1][0]
+    assert g.mst_mat[0][1] == g.mst_mat[1][0]
