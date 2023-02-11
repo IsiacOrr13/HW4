@@ -17,7 +17,7 @@ dependencies = [
     "numpy",
     "heapq",
     "typing",
-    "sklearn.metrics"
+    "sklearn"
 ]
 
 [project.urls]
