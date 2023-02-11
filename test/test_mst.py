@@ -1,5 +1,4 @@
 import pytest
-import sklearn.metrics
 import numpy as np
 from mst import Graph
 from sklearn.metrics import pairwise_distances
